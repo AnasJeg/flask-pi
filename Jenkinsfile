@@ -1,9 +1,9 @@
 pipeline {
-    agent { 
-        node {
-            label 'py-pipline'
-            }
-      }
+    agent {
+        docker {
+            image 'python:3.9-slim-buster'
+        }
+    }
     triggers {
         pollSCM '* * * * *'
     }
@@ -12,8 +12,7 @@ pipeline {
             steps {
                 echo "Building.."
                 sh '''
-                cd src
-                pip install -r requirements.txt
+                cd src && pip install -r requirements.txt
                 '''
             }
         }
@@ -22,8 +21,7 @@ pipeline {
                 echo "Testing.."
                 sh '''
                 cd src
-                python3 app.py
-                python3 app.py --name=Brad
+                python3 -m unittest discover tests
                 '''
             }
         }
